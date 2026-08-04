@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ CUR_LANG }}" dir="{{ TEXT_DIR }}" data-theme="{{ THEME }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ T.brand }}{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <form action="{% url 'core:set_language' %}" method="post" class="inline-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <select name="lang" class="lang-select" onchange="this.form.submit()">
+        {% for code, label in LANGUAGES %}
+          <option value="{{ code }}" {% if code == CUR_LANG %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </form>
+
+    <form action="{% url 'core:toggle_theme' %}" method="post" class="inline-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button type="submit" class="theme-toggle">{% if THEME == 'dark' %}☀️{% else %}🌙{% endif %}</button>
+    </form>
+
+  </div>
+</div>
+
+{% if messages %}
+  <div class="messages wrap">
+    {% for message in messages %}
+      <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

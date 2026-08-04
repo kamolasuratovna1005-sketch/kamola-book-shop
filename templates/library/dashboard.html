@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load library_extras %}
+{% block title %}{{ T.brand }}{% endblock %}
+{% block content %}
+<div class="wrap">
+  <header>
+    <div class="eyebrow">{{ T.eyebrow }}</div>
+    <h1>{{ T.brand }}</h1>
+    <p>{{ T.tagline }}</p>
+  </header>
+
+  <div class="card">
+    <h2>🔍 <span>{{ T.check_title }}</span></h2>
+    <form method="get" class="row">
+      <input type="text" name="q" value="{{ query }}" placeholder="{{ T.check_placeholder }}">
+      <button class="btn-primary" type="submit">{{ T.check_button }}</button>
+    </form>
+    {% if result %}
+      <div class="result show {% if result.found %}found{% else %}missing{% endif %}">
+        <span class="icon">{% if result.found %}✅{% else %}🛒{% endif %}</span>
+        <span>{{ result.text }}<span class="sub">{{ result.sub }}</span></span>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2>➕ <span>{{ T.add_title }}</span></h2>
+    <form method="post" action="{% url 'library:add_book' %}" enctype="multipart/form-data" class="stack-form">
+      {% csrf_token %}
+      <div class="row">
+        <input type="text" name="title" value="{{ form.title.value|default_if_none:'' }}" placeholder="{{ T.field_name }}" required>
+        <input type="text" name="author" value="{{ form.author.value|default_if_none:'' }}" placeholder="{{ T.field_author }}">
+      </div>
+      <div class="row">
+        <select name="genre">
+          {% for code, label in genre_options %}
+            <option value="{{ code }}" {% if form.genre.value == code %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <select name="status">
+          {% for code, label in status_options %}
+            <option value="{{ code }}" {% if form.status.value == code %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="row">
+        <label class="file-label">{{ T.field_cover }}
+          <input type="file" name="cover" accept="image/*">
+        </label>
+        <button class="btn-ghost" type="submit">{{ T.add_button }}</button>
+      </div>
+      {% if form.errors %}
+        <div class="form-error">{{ form.errors }}</div>
+      {% endif %}
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>📚 <span>{{ T.shelf_title }}</span> <span class="tag">{{ count_label }}</span></h2>
+
+    <form method="get" class="row filter-row">
+      <input type="hidden" name="q" value="{{ query }}">
+      <select name="genre" onchange="this.form.submit()">
+        <option value="">{{ T.filter_all_genres }}</option>
+        {% for code, label in genre_options %}
+          <option value="{{ code }}" {% if genre_filter == code %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      <select name="status" onchange="this.form.submit()">
+        <option value="">{{ T.filter_all_statuses }}</option>
+        {% for code, label in status_options %}
+          <option value="{{ code }}" {% if status_filter == code %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </form>
+
+    {% if books %}
+      <div class="shelf">
+        {% for book in books %}
+          <div class="book-item">
+            {% if book.cover %}
+              <img class="cover-thumb" src="{{ book.cover.url }}" alt="">
+            {% else %}
+              <div class="spine" style="background:{{ book.spine_color }}"></div>
+            {% endif %}
+            <div class="book-info">
+              <div class="book-name">{{ book.title }}</div>
+              {% if book.author %}<div class="book-author">{{ book.author }}</div>{% endif %}
+              <div class="book-meta">
+                <span class="pill">{{ book|genre_label:CUR_LANG }}</span>
+                <span class="pill pill-status status-{{ book.status }}">{{ book|status_label:CUR_LANG }}</span>
+              </div>
+            </div>
+            <form method="post" action="{% url 'library:delete_book' book.pk %}" class="inline-form" onsubmit="return confirm('{{ T.delete_confirm }}');">
+              {% csrf_token %}
+              <button class="btn-del" type="submit" title="✕">✕</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">{{ T.empty_shelf }}</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kamolaning Kutubxonasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <select id="langSelect" class="lang-select" title="Til / Язык / Dil / اللغة / Language">
+      <option value="uz">O'zbek</option>
+      <option value="ru">Русский</option>
+      <option value="tr">Türkçe</option>
+      <option value="ar">العربية</option>
+      <option value="en">English</option>
+    </select>
+    <button id="themeToggle" class="theme-toggle" type="button">🌙</button>
+  </div>
+</div>
+
+<div class="wrap" id="appContent">
+  <header>
+    <div class="eyebrow" data-i18n="eyebrow">Shaxsiy to'plam</div>
+    <h1 data-i18n="title">Kamolaning Kutubxonasi</h1>
+    <p data-i18n="subtitle">Kitob xarid qilishdan oldin — avval shu yerda tekshiring</p>
+  </header>
+
+  <div class="card">
+    <h2>🔍 <span data-i18n="checkTitle">Kitobni tekshirish</span></h2>
+    <div class="row">
+      <input type="text" id="checkInput" data-i18n-placeholder="checkPlaceholder" placeholder="Kitob nomini kiriting...">
+      <button class="btn-primary" id="checkBtn" data-i18n="checkButton" type="button">Tekshirish</button>
+    </div>
+    <div class="result" id="resultBox"></div>
+  </div>
+
+  <div class="card">
+    <h2>➕ <span data-i18n="addTitle">Yangi kitob qo'shish</span></h2>
+    <div class="row">
+      <input type="text" id="nameInput" data-i18n-placeholder="namePlaceholder" placeholder="Kitob nomi">
+      <input type="text" id="authorInput" data-i18n-placeholder="authorPlaceholder" placeholder="Muallifi (ixtiyoriy)">
+    </div>
+    <div class="row cover-row">
+      <input type="file" id="coverInput" accept="image/*" hidden>
+      <label for="coverInput" class="cover-picker">
+        <img id="coverPreview" class="cover-preview" style="display:none;" alt="">
+        <span id="coverPickerText" data-i18n="coverPick">📷 Muqova rasmi (ixtiyoriy)</span>
+      </label>
+      <button class="btn-ghost btn-small" id="coverClearBtn" type="button" style="display:none;">✕</button>
+      <button class="btn-primary" id="addBtn" data-i18n="addButton" type="button">Qo'shish</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📚 <span data-i18n="shelfTitle">To'plamim</span> <span class="tag" id="countTag">0 ta</span></h2>
+    <div id="shelfArea"><div class="loading-text" data-i18n="loadingText">Yuklanmoqda...</div></div>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
